@@ -1,0 +1,164 @@
+<Window x:Class="Gallery.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Gallery"
+        Title="Gallery" Width="1280" Height="820" MinWidth="760" MinHeight="520"
+        WindowStyle="None" AllowsTransparency="False" Background="{DynamicResource Win}"
+        FontFamily="pack://application:,,,/Fonts/#Inter" FontSize="13" UseLayoutRounding="True" SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType"
+        PreviewKeyDown="Window_PreviewKeyDown">
+  <WindowChrome.WindowChrome>
+    <WindowChrome CaptionHeight="52" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
+  </WindowChrome.WindowChrome>
+  <Window.Resources>
+    <DataTemplate DataType="{x:Type local:RowItem}"><local:RowHost/></DataTemplate>
+  </Window.Resources>
+  <Grid x:Name="Root">
+    <Grid x:Name="MainGrid">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+
+      <!-- sidebar -->
+      <Border x:Name="Sidebar" Width="220" Background="{DynamicResource Side}" BorderBrush="{DynamicResource Sep}" BorderThickness="0,0,1,0" ClipToBounds="True">
+        <Grid Width="220" HorizontalAlignment="Left">
+          <Grid.RowDefinitions><RowDefinition Height="52"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" Padding="10,0">
+            <StackPanel x:Name="SideStack"/>
+          </ScrollViewer>
+          <Grid Grid.Row="2" Margin="10,8,10,12">
+            <Button x:Name="ThemeBtn" Style="{StaticResource RowBtn}" Click="ThemeBtn_Click">
+              <StackPanel Orientation="Horizontal">
+                <local:Icon Data="{StaticResource ic_gear}" Foreground="{DynamicResource Accent}" Width="18" Height="18"/>
+                <TextBlock Text="Appearance" Margin="8,0,0,0" VerticalAlignment="Center"/>
+              </StackPanel>
+            </Button>
+            <Popup x:Name="ThemePop" PlacementTarget="{Binding ElementName=ThemeBtn}" Placement="Top" StaysOpen="False" AllowsTransparency="True" VerticalOffset="-6">
+              <Border Background="{DynamicResource Pop}" BorderBrush="{DynamicResource Sep}" BorderThickness="1" CornerRadius="10" Padding="6" Width="200" Margin="10">
+                <Border.Effect><DropShadowEffect BlurRadius="24" ShadowDepth="6" Opacity="0.25" Direction="270"/></Border.Effect>
+                <StackPanel>
+                <Border Background="{DynamicResource Seg}" CornerRadius="8" Padding="2">
+                  <UniformGrid Rows="1">
+                    <Button x:Name="ThLight" Style="{StaticResource SegBtn}" Content="Light" Tag="light" Click="Theme_Click" Padding="0,3"/>
+                    <Button x:Name="ThAuto" Style="{StaticResource SegBtn}" Content="Auto" Tag="system" Click="Theme_Click" Padding="0,3"/>
+                    <Button x:Name="ThDark" Style="{StaticResource SegBtn}" Content="Dark" Tag="dark" Click="Theme_Click" Padding="0,3"/>
+                  </UniformGrid>
+                </Border>
+                </StackPanel>
+              </Border>
+            </Popup>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <!-- main -->
+      <Grid Grid.Column="1" Background="{DynamicResource Win}">
+        <Grid.RowDefinitions><RowDefinition Height="52"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <Grid x:Name="Toolbar" Margin="12,0,150,0">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <Button Style="{StaticResource TbBtn}" Click="SideToggle_Click" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Show/Hide Sidebar">
+              <local:Icon Data="{StaticResource ic_sidebar}" Width="18" Height="18" Foreground="{DynamicResource Text}"/>
+            </Button>
+            <Button x:Name="BackBtn" Style="{StaticResource TbBtn}" Visibility="Collapsed" Click="Back_Click" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Back">
+              <local:Icon Data="{StaticResource ic_chevL}" Width="18" Height="18" Foreground="{DynamicResource Text}"/>
+            </Button>
+            <TextBlock x:Name="TitleText" Text="Library" FontSize="15" FontWeight="Bold" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource Text}" TextTrimming="CharacterEllipsis"/>
+          </StackPanel>
+          <Border Grid.Column="1" Background="{DynamicResource Seg}" CornerRadius="8" Padding="2" VerticalAlignment="Center" WindowChrome.IsHitTestVisibleInChrome="True">
+            <StackPanel Orientation="Horizontal" x:Name="ModeSeg">
+              <Button Style="{StaticResource SegBtn}" Content="Years" Tag="years" Click="Mode_Click"/>
+              <Button Style="{StaticResource SegBtn}" Content="Months" Tag="months" Click="Mode_Click"/>
+              <Button Style="{StaticResource SegBtn}" Content="Days" Tag="days" Click="Mode_Click"/>
+              <Button Style="{StaticResource SegBtn}" Content="All Photos" Tag="all" Click="Mode_Click"/>
+            </StackPanel>
+          </Border>
+          <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" WindowChrome.IsHitTestVisibleInChrome="True">
+            <local:Icon Data="{StaticResource ic_minus}" Width="12" Height="12" Foreground="{DynamicResource Muted}"/>
+            <Slider x:Name="ZoomSlider" Style="{StaticResource ZoomSl}" Minimum="120" Maximum="420" Value="220" Width="90" Margin="6,0" VerticalAlignment="Center" ValueChanged="Zoom_Changed" ToolTip="Thumbnail size"/>
+            <local:Icon Data="{StaticResource ic_plus}" Width="12" Height="12" Foreground="{DynamicResource Muted}"/>
+            <Border x:Name="SearchBox" Background="{DynamicResource Seg}" CornerRadius="8" Height="26" Width="140" Margin="12,0,0,0">
+              <Grid>
+                <local:Icon Data="{StaticResource ic_search}" Width="14" Height="14" Foreground="{DynamicResource Muted}" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                <TextBox x:Name="SearchTb" Background="Transparent" BorderThickness="0" Margin="28,0,8,0" VerticalContentAlignment="Center" Foreground="{DynamicResource Text}" CaretBrush="{DynamicResource Text}" TextChanged="Search_Changed" GotFocus="Search_Focus" LostFocus="Search_Focus"/>
+                <TextBlock x:Name="SearchPh" Text="Search" Foreground="{DynamicResource Muted}" Margin="28,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+              </Grid>
+            </Border>
+          </StackPanel>
+        </Grid>
+        <Grid x:Name="Scroller" Grid.Row="1" SizeChanged="Scroller_SizeChanged">
+          <Grid>
+            <ItemsControl x:Name="Rows" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.VirtualizationMode="Standard" ScrollViewer.CanContentScroll="True">
+              <ItemsControl.Template>
+                <ControlTemplate TargetType="ItemsControl">
+                  <ScrollViewer x:Name="PART_Scroll" CanContentScroll="True" VerticalScrollBarVisibility="Auto" Focusable="False" Padding="0">
+                    <ItemsPresenter/>
+                  </ScrollViewer>
+                </ControlTemplate>
+              </ItemsControl.Template>
+              <ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <StackPanel x:Name="EmptyBox" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,120,0,0" Visibility="Collapsed">
+              <local:Icon Data="{StaticResource ic_photos}" Width="56" Height="56" Foreground="{DynamicResource Accent}" Margin="0,0,0,10"/>
+              <TextBlock Text="No photos here yet." Foreground="{DynamicResource Muted}" HorizontalAlignment="Center"/>
+              <Button Content="Add a Folder" Click="AddFolder_Click" Margin="0,12,0,0" Padding="16,7" Foreground="White" Background="{DynamicResource Accent}" BorderThickness="0"/>
+            </StackPanel>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
+
+    <!-- lightbox -->
+    <Grid x:Name="Lightbox" Visibility="Collapsed" Background="{DynamicResource Lb}">
+      <Grid x:Name="LbStageHost" Margin="0,52,0,84" ClipToBounds="True" MouseWheel="Lb_Wheel" MouseLeftButtonDown="Lb_Down" MouseMove="Lb_Move" MouseLeftButtonUp="Lb_Up" Background="Transparent">
+        <Image x:Name="LbImg" RenderOptions.BitmapScalingMode="Linear" Stretch="Uniform" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <Image.RenderTransform><TransformGroup><ScaleTransform x:Name="LbScale"/><TranslateTransform x:Name="LbTrans"/></TransformGroup></Image.RenderTransform>
+          <Image.LayoutTransform><RotateTransform x:Name="LbRot"/></Image.LayoutTransform>
+        </Image>
+      </Grid>
+      <Button x:Name="LbPrev" Style="{StaticResource TbBtn}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="16,0,0,0" Width="40" Height="40" Click="LbPrev_Click" Opacity="0.7">
+        <local:Icon Data="{StaticResource ic_chevL}" Width="22" Height="22" Foreground="{DynamicResource Text}"/>
+      </Button>
+      <Button x:Name="LbNext" Style="{StaticResource TbBtn}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" Width="40" Height="40" Click="LbNext_Click" Opacity="0.7">
+        <local:Icon Data="{StaticResource ic_chevR}" Width="22" Height="22" Foreground="{DynamicResource Text}"/>
+      </Button>
+      <Grid x:Name="LbBar" VerticalAlignment="Top" Height="52" Margin="12,0,150,0" Background="Transparent">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Button Style="{StaticResource TbBtn}" HorizontalAlignment="Left" Click="LbClose_Click" WindowChrome.IsHitTestVisibleInChrome="True" Padding="4,4,10,4">
+          <StackPanel Orientation="Horizontal"><local:Icon Data="{StaticResource ic_chevL}" Width="18" Height="18" Foreground="{DynamicResource Text}"/><TextBlock Text="Back" Foreground="{DynamicResource Text}" VerticalAlignment="Center"/></StackPanel>
+        </Button>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+          <TextBlock x:Name="LbDate" FontWeight="Bold" FontSize="13" HorizontalAlignment="Center" Foreground="{DynamicResource Text}"/>
+          <TextBlock x:Name="LbTime" FontSize="11" HorizontalAlignment="Center" Foreground="{DynamicResource Muted}"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" WindowChrome.IsHitTestVisibleInChrome="True">
+          <Button Style="{StaticResource TbBtn}" Click="LbPlay_Click" ToolTip="Slideshow"><local:Icon Data="{StaticResource ic_play}" Width="18" Height="18" Foreground="{DynamicResource Text}"/></Button>
+          <Button Style="{StaticResource TbBtn}" Click="LbRotL_Click" ToolTip="Rotate Left (Shift+R)"><local:Icon Data="{StaticResource ic_rotL}" Width="18" Height="18" Foreground="{DynamicResource Text}"/></Button>
+          <Button Style="{StaticResource TbBtn}" Click="LbRotR_Click" ToolTip="Rotate Right (R)"><local:Icon Data="{StaticResource ic_rotR}" Width="18" Height="18" Foreground="{DynamicResource Text}"/></Button>
+          <Button Style="{StaticResource TbBtn}" Click="LbEdit_Click" ToolTip="Edit (E)"><local:Icon Data="{StaticResource ic_edit}" Width="18" Height="18" Foreground="{DynamicResource Text}"/></Button>
+          <Button Style="{StaticResource TbBtn}" Click="LbFav_Click" ToolTip="Favorite (F)"><local:Icon x:Name="LbFavIcon" Data="{StaticResource ic_heart}" Width="18" Height="18" Foreground="{DynamicResource Text}"/></Button>
+          <Button Style="{StaticResource TbBtn}" Click="LbInfo_Click" ToolTip="Info (I)"><local:Icon Data="{StaticResource ic_info}" Width="18" Height="18" Foreground="{DynamicResource Text}"/></Button>
+          <Button Style="{StaticResource TbBtn}" Click="LbDel_Click" ToolTip="Move to Recycle Bin (Delete)"><local:Icon Data="{StaticResource ic_trash}" Width="18" Height="18" Foreground="#FF3B30"/></Button>
+        </StackPanel>
+      </Grid>
+      <ScrollViewer x:Name="StripScroll" VerticalAlignment="Bottom" Height="84" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+        <StackPanel x:Name="Strip" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0"/>
+      </ScrollViewer>
+      <Border x:Name="InfoPanel" Width="280" HorizontalAlignment="Right" Margin="0,52,0,0" Background="{DynamicResource Win}" BorderBrush="{DynamicResource Sep}" BorderThickness="1,0,0,0" Visibility="Collapsed" Padding="18,12">
+        <StackPanel>
+          <TextBlock Text="Info" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource Text}"/>
+          <StackPanel x:Name="InfoRows"/>
+          <Button Content="Show in Explorer" Click="LbReveal_Click" Margin="0,12,0,0" Padding="12,7" Background="{DynamicResource Seg}" Foreground="{DynamicResource Text}" BorderThickness="0"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border x:Name="ToastBox" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,28" Background="#F0282829" CornerRadius="20" Padding="18,9" Opacity="0" IsHitTestVisible="False">
+      <TextBlock x:Name="ToastText" Foreground="White"/>
+    </Border>
+
+    <StackPanel x:Name="Caption" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Height="52" WindowChrome.IsHitTestVisibleInChrome="True">
+      <Button x:Name="CapMin" Style="{StaticResource TbBtn}" Width="46" Height="52" Click="CapMin_Click" Padding="0"><TextBlock FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Text="&#xE921;" FontSize="10" Foreground="{DynamicResource Text}"/></Button>
+      <Button x:Name="CapMax" Style="{StaticResource TbBtn}" Width="46" Height="52" Click="CapMax_Click" Padding="0"><TextBlock x:Name="CapMaxTx" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Text="&#xE922;" FontSize="10" Foreground="{DynamicResource Text}"/></Button>
+      <Button x:Name="CapClose" Style="{StaticResource TbBtn}" Width="46" Height="52" Click="CapClose_Click" Padding="0" MouseEnter="CapClose_Enter" MouseLeave="CapClose_Leave"><TextBlock x:Name="CapCloseTx" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="10" Foreground="{DynamicResource Text}"/></Button>
+    </StackPanel>
+  </Grid>
+</Window>
