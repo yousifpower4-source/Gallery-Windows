@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data:; font-src 'self'; style-src 'self' 'unsafe-inline'">
+<title>Gallery</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<aside id="sidebar">
+  <div class="side-drag"></div>
+  <div class="side-scroll">
+    <div class="side-h">Library</div>
+    <nav id="nav">
+      <button class="row active" data-view="lib"><span class="ic" data-ico="photos"></span><span class="lbl">Library</span></button>
+      <button class="row" data-view="fav"><span class="ic" data-ico="heart"></span><span class="lbl">Favorites</span></button>
+      <button class="row" data-view="recent"><span class="ic" data-ico="clock"></span><span class="lbl">Recents</span></button>
+    </nav>
+    <div class="side-h">Albums <button id="add-folder" class="mini" title="Add Folder"><span data-ico="plus"></span></button></div>
+    <nav id="folders"></nav>
+  </div>
+  <div class="side-foot">
+    <button id="theme-btn" class="row"><span class="ic" data-ico="gear"></span><span class="lbl">Appearance</span></button>
+    <div id="theme-pop" hidden>
+      <div class="seg small" id="theme"><button data-theme="light">Light</button><button data-theme="system">Auto</button><button data-theme="dark">Dark</button></div>
+    </div>
+  </div>
+</aside>
+
+<main id="main">
+  <header id="toolbar">
+    <div class="tb-left">
+      <button id="side-toggle" class="tb-btn" title="Show/Hide Sidebar"><span data-ico="sidebar"></span></button>
+      <button id="back" class="tb-btn" hidden title="Back"><span data-ico="chevL"></span></button>
+      <h1 id="title">Library</h1>
+    </div>
+    <div class="seg" id="modes"><i class="seg-thumb"></i>
+      <button data-mode="years">Years</button><button data-mode="months">Months</button><button data-mode="days">Days</button><button data-mode="all" class="on">All Photos</button>
+    </div>
+    <div class="tb-right">
+      <div class="zoom-wrap" title="Thumbnail size"><span data-ico="minus" class="zi"></span><input id="zoom" type="range" min="120" max="420" value="220"><span data-ico="plus" class="zi"></span></div>
+      <label class="search"><span data-ico="search"></span><input id="search" type="search" placeholder="Search" spellcheck="false"></label>
+    </div>
+  </header>
+  <div id="scroller"><div id="grid"></div>
+    <div id="empty" hidden><div class="big" data-ico="photos"></div><p>No photos here yet.</p><button id="empty-add" class="btn-accent">Add a Folder</button></div>
+  </div>
+</main>
+
+<div id="lightbox" hidden>
+  <div id="lb-bg"></div>
+  <div id="lb-wrap">
+    <div id="lb-bar">
+      <button id="lb-close" class="tb-btn wide"><span data-ico="chevL"></span>Back</button>
+      <div id="lb-title"><b id="lb-date"></b><span id="lb-time"></span></div>
+      <div class="lb-actions">
+        <button id="lb-play" class="tb-btn" title="Slideshow"><span data-ico="play"></span></button>
+        <button id="lb-rotl" class="tb-btn" title="Rotate Left (Shift+R)"><span data-ico="rotL"></span></button>
+        <button id="lb-rotr" class="tb-btn" title="Rotate Right (R)"><span data-ico="rotR"></span></button>
+        <button id="lb-edit" class="tb-btn" title="Edit (E)"><span data-ico="edit"></span></button>
+        <button id="lb-fav" class="tb-btn" title="Favorite (F)"><span data-ico="heart"></span></button>
+        <button id="lb-info-btn" class="tb-btn" title="Info (I)"><span data-ico="info"></span></button>
+        <button id="lb-del" class="tb-btn" title="Move to Recycle Bin (Delete)"><span data-ico="trash"></span></button>
+      </div>
+    </div>
+    <button id="lb-prev" class="lb-arrow"><span data-ico="chevL"></span></button>
+    <div id="lb-stage"><img id="lb-img" alt=""></div>
+    <button id="lb-next" class="lb-arrow"><span data-ico="chevR"></span></button>
+    <div id="lb-strip"></div>
+    <aside id="lb-panel">
+      <h3>Info</h3>
+      <div class="kv"><span>Name</span><b id="lb-name"></b></div>
+      <div class="kv"><span>Date</span><b id="lb-pdate"></b></div>
+      <div class="kv"><span>Size</span><b id="lb-psize"></b></div>
+      <div class="kv"><span>Dimensions</span><b id="lb-pdim"></b></div>
+      <div class="kv"><span>Location</span><b id="lb-ppath"></b></div>
+      <div class="kv"><span>Photo</span><b id="lb-info"></b></div>
+      <button id="lb-reveal" class="btn-soft">Show in Explorer</button>
+    </aside>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
