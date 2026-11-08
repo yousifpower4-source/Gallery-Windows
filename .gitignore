@@ -29,5 +29,5 @@ HANDOFF*.md
 # Personal data - never commit
 settings.json
 wallpapers*/
-screenshots/
+/screenshots/
 *.log

@@ -19,7 +19,7 @@ Gallery was rewritten from Electron to native **WPF on .NET 8**. It is a single 
 - Single-instance behaviour: opening another image from Explorer reuses the running window.
 
 ### Changed
-- **Memory and speed:** software rendering by default (avoids the GPU process and keeps RAM low), a persistent on-disk thumbnail cache (`%LOCALAPPDATA%GalleryWpf	humbs`) so folders open fast after the first scan, and no bundled Chromium. The installed footprint is a single ~140 MB self-contained exe (installer ~44 MB) instead of an Electron runtime.
+- **Memory and speed:** software rendering by default (avoids the GPU process and keeps RAM low), a persistent on-disk thumbnail cache (`%LOCALAPPDATA%\GalleryWpf\thumbs`) so folders open fast after the first scan, and no bundled Chromium. The installed footprint is a single ~140 MB self-contained exe (installer ~44 MB) instead of an Electron runtime.
 - Settings are stored in `%APPDATA%\GalleryWpf\settings.json`, and existing settings from the Electron version are imported automatically on first run.
 
 ### Removed
